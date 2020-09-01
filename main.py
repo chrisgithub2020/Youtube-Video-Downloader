@@ -60,16 +60,18 @@ class MainWin(QMainWindow):
 
     def links(self, result):
         self.streamer = result['streamer']
+        self.ui.resolution_combo.clear()
         for stream in result['streamer']:
             self.ui.resolution_combo.addItem(stream.resolution + ' ' + ': ' + str(round(stream.filesize/1024/1024,2)) + '' + 'MB', stream.resolution)
         
+        self.ui.language_combo.clear()
         self.ui.language_combo.addItem('English', 'en')
-        self.ui.language_combo.addItem('French', 'fr')
-        self.ui.language_combo.addItem('Spanish', 'sp')
+        self.ui.language_combo.addItem('English (UK)', 'en-GB')
+        self.ui.language_combo.addItem('Spanish', 'es')
 
-        self.ui.title_browser.setText(result['title'])
+        self.ui.title_browser.setText('Title: ' + result['title'])
         self.ui.descrip_browser.setText(result['desc'])
-        print(result['subtitle'])
+        self.ui.size_browser.setText('Author: ' + result['author'])
         self.ui.views_browser.setText('This video has ' + str(result['views']) + ' views')
 
         

@@ -28,7 +28,7 @@ class YoutubeThread(QThread):
         title = link.title
         desc = link.description
         views = link.views
-        subtitle = link.captions.all()
+        author = link.author
         streamer = link.streams.filter(only_video=True).all()
-        result_dict = {'title': title, 'desc': desc, 'streamer': streamer, 'views':views, 'subtitle':subtitle}
+        result_dict = {'title': title, 'desc': desc, 'streamer': streamer, 'views':views, 'author':author}
         self.success_signal.emit(result_dict)
