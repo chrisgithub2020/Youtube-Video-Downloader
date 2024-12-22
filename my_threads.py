@@ -1,34 +1,44 @@
-from PyQt5.QtCore import QThread, pyqtSignal
+from threading import Thread
 from pytube import YouTube
+from yt_dlp import YoutubeDL
 
-
-class YoutubeThread(QThread):
-
-    success_signal = pyqtSignal(dict)
-    progress_signal = pyqtSignal(float)
+class YoutubeThread():
+    video = ""
+    thumbnail = ''
+    get_video_thread = ""
+    download_thread = ""
     
-    def __init__(self):
-        super().__init__()
-        self.search_link = ""
+    def __init__(self, link:str, destination: str, progress_callback):
+        self.search_link = link.strip()
+        self.destination = destination
+        self.on_progress = progress_callback
+        self.ydl_opts = { 'format': 'best', 'outtmpl': f'{self.destination}/%(title)s.%(ext)s', "progress_hooks":[self.progress]}
+        self.get_video_thread = Thread(target=self.get_video)
+        self.get_video_thread.start()
 
     def set_params(self, search_link):
         self.search_link = search_link
 
-    def progress_func(self, stream, chunk, bytes_remaining):
-        size = stream.filesize
-        progress = (float(abs(int(bytes_remaining)-size))/size)*float(100)
-        self.progress_signal.emit(progress)
 
-    def download_video(self, stream, folder_path):
-        
-        stream.download(folder_path)
+    def get_video(self):
+        self.video = YoutubeDL(self.ydl_opts)
+        info_dict = self.video.extract_info(self.search_link,download=False)
+        thumbnail_url = info_dict.get("thumbnail",'No thumbnail found')
+        self.thumbnail = thumbnail_url
 
-    def run(self):
-        link = YouTube(self.search_link, on_progress_callback=self.progress_func)
-        title = link.title
-        desc = link.description
-        views = link.views
-        author = link.author
-        streamer = link.streams.filter(only_video=True).all()
-        result_dict = {'title': title, 'desc': desc, 'streamer': streamer, 'views':views, 'author':author}
-        self.success_signal.emit(result_dict)
+
+    def download_video(self):        
+        self.video.download([self.search_link])
+
+    def start_download_video_thread(self):
+        self.download_thread = Thread(target=self.download_video)
+        self.download_thread.start()
+
+    def progress(self,d):
+        if d['status'] == "downloading":
+            downloaded = d.get("downloaded_bytes",0)
+            total = d.get("total_bytes",1)
+            progress_value = int(downloaded/total * 100)
+            self.on_progress(progress_value)
+        if d['status'] == 'finished':
+            self.on_progress(100)

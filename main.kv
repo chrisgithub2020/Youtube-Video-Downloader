@@ -1,0 +1,91 @@
+MDFloatLayout:
+
+    MDBoxLayout:
+        orientation: "vertical"
+
+        
+        MDBoxLayout:
+            md_bg_color: "#345578"
+            size_hint_y: 0.11
+            padding: dp(5)
+            MDLabel:
+                id: download_dir
+                text: "Hello World"
+                pos_hint: {'top':1}
+                theme_text_color: "Custom"
+                text_color: "#f2f5f7"
+
+            MDFlatButton:
+                text: "Change"
+                size_hint_x: 0.22
+                pos_hint: {'top':0.9}
+                on_press: app.directory()
+                md_bg_color: "#d0d7db"
+
+        MDBoxLayout:
+            halign: "center"
+            md_bg_color: "#d0d7db"
+            size_hint_y: 0.11
+            padding: dp(5), dp(0),dp(5), dp(5)
+            spacing: dp(5)
+            MDTextField:
+                id: video_link
+                hint_text: "paste link here"
+                color_mode: "Custom"
+                pos_hint: {'top':1}
+                line_color_focus: "#4cc75a"
+                size_hint_y: 1.37
+            
+            MDFlatButton:
+                text: "Search"
+                id: search_btn
+                size_hint_x: 0.22
+                pos_hint: {'top':0.9}
+                on_press: app.search()
+                md_bg_color: "#FFFFFF"
+    
+        MDBoxLayout:
+            orientation: "vertical"
+            spacing: dp(3)
+            padding: dp(5)
+            AsyncImage:
+                id: thumbnail
+                source: './icons/youtube.png'
+                size: self.texture_size
+            
+            MDProgressBar:
+                id: progress_bar
+                size_hint_y: 0.02
+                value: 50
+                color: "#83eb34"
+        
+        MDGridLayout:
+            size_hint_y: 0.11
+            size_hint_x: 1
+            padding: dp(20), dp(5)
+            spacing: dp(5)
+            cols: 2
+            rows: 2
+            
+            MDFlatButton:
+                size_hint_x: 1
+                id: cancel_btn
+                text: "Cancel"
+                md_bg_color: "#a33e33"
+            
+            MDFlatButton:
+                size_hint_x: 1
+                id: download_btn
+                on_press: app.download()
+                text: "Download"
+                md_bg_color: "#4cc75a"
+
+    MDSpinner:
+        id: spinner
+        size_hint: None, None
+        size: dp(40), dp(40)
+        pos_hint:{'center_x':0.5, "center_y":0.5}
+        active: False
+    
+
+
