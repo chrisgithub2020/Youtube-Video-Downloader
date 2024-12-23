@@ -5,6 +5,7 @@ from yt_dlp import YoutubeDL
 class YoutubeThread():
     video = ""
     thumbnail = ''
+    link_auth = False
     get_video_thread = ""
     download_thread = ""
     
@@ -21,10 +22,14 @@ class YoutubeThread():
 
 
     def get_video(self):
-        self.video = YoutubeDL(self.ydl_opts)
-        info_dict = self.video.extract_info(self.search_link,download=False)
-        thumbnail_url = info_dict.get("thumbnail",'No thumbnail found')
-        self.thumbnail = thumbnail_url
+        try: 
+            self.video = YoutubeDL(self.ydl_opts)
+            info_dict = self.video.extract_info(self.search_link,download=False)
+            thumbnail_url = info_dict.get("thumbnail",'No thumbnail found')
+            self.thumbnail = thumbnail_url
+            self.link_auth = True
+        except:
+            print("wrong link")
 
 
     def download_video(self):        
